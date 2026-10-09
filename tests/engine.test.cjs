@@ -1,0 +1,5 @@
+const assert=require('node:assert/strict');const {JellyEngine}=require('../engine.js');
+function tick(g){for(let i=0;i<400&&g.flying;i++)g.step(1/120)}
+let g=new JellyEngine();assert.equal(g.launch(0,5),false);assert.equal(g.launch(-90,-180),true);assert.equal(g.launch(0,-180),false);tick(g);assert.equal(g.lives,2);
+g.newGame();for(let level=1;level<=30;level++){const speed=590,t=(speed+Math.sqrt(speed*speed-2*650*250))/650;const dx=(g.plate(g.time+t)-200)/t/2.8;assert(g.launch(dx,-180));tick(g);assert.equal(g.level,level+1,'level '+level);for(let j=0;j<110;j++)g.step(1/120)}assert(g.ended);assert.equal(g.lives,3);assert(g.score>=4800);
+let h=new JellyEngine();for(let i=0;i<3;i++){h.launch(-90,-180);tick(h);for(let j=0;j<110;j++)h.step(1/120)}assert(h.ended);assert.equal(h.lives,0);assert(!h.launch(0,-180));h.newGame();h.level=14;h.score=600;assert(new JellyEngine().restore(h.snapshot()));assert(!h.restore({level:NaN}));console.log('PASS: 30 levels, perfect landing, misses, game over, restart, save validation, duplicate launch');
